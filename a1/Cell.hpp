@@ -30,6 +30,24 @@
 #include <string>
 #include <stack>
 
+/**
+  *\brief evaluate Type first.
+  */
+enum TypeMark {type_int, type_double, type_symbol, type_cons};
+
+/**
+  *\brief promise to declear Cell later.
+  */
+class Cell;
+
+/**
+  * \struct cons
+  * \brief Construct cons type.
+  */
+struct cons {
+	Cell* my_car;
+	Cell* my_cdr;
+};
 
 /**
  * \class Cell
@@ -119,8 +137,21 @@ public:
   void print(std::ostream& os = std::cout) const;
 
 private:
-
-  std::string sexpr_m;
+	
+  /**
+   * \brief A mark of Cell type.
+   */
+  TypeMark type_m;
+  
+  /**
+   * \brief The stored value.
+   */
+  union{
+  	int my_int;
+  	double my_double;
+  	char* my_symbol;
+  	cons my_cons;
+  };
 
 };
 
