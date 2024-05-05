@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
   cout << "Size of the list is " << size << endl;
   cout << *mixed_list;
 
+  size = list_size(mixed_list_rev);
   cout << "Size of the reverse list is " << size << endl;
   cout << *mixed_list_rev;
   // Write test cases for erase and ith

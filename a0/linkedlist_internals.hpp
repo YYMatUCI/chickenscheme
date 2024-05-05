@@ -20,6 +20,10 @@
  */
 inline Cell* make_int(int i)
 {
+    Cell* cell = (Cell*) malloc(sizeof(Cell));
+    cell->tag_m = type_int;
+    cell->int_m = i;
+    return cell;
 }
 
 /**
@@ -28,6 +32,10 @@ inline Cell* make_int(int i)
  */
 inline Cell* make_double(double d)
 {
+    Cell* cell = (Cell*) malloc(sizeof(Cell));
+    cell->tag_m = type_double;
+    cell->double_m = d;
+    return cell;
 }
 
 /**
@@ -36,6 +44,11 @@ inline Cell* make_double(double d)
  */
 inline Cell* make_symbol(const char* s)
 {
+    Cell* cell = (Cell*) malloc(sizeof(Cell));
+    cell->tag_m = type_symbol;
+    cell->symbol_m = (char*) malloc(sizeof(char) * (strlen(s) + 1));
+    strcpy(cell->symbol_m, s);
+    return cell;
 }
 
 
@@ -46,6 +59,10 @@ inline Cell* make_symbol(const char* s)
  */
 inline Node* make_node(Cell* my_elem, Node* my_next)
 {
+    Node* node = (Node*) malloc(sizeof(Node));
+    node->elem_m = my_elem;
+    node->next_m = my_next;
+    return node;
 }
 
 /**
@@ -54,6 +71,7 @@ inline Node* make_node(Cell* my_elem, Node* my_next)
  */
 inline bool intp(const Cell* c)
 {
+    return c->tag_m == type_int;
 }
 
 /**
@@ -62,6 +80,7 @@ inline bool intp(const Cell* c)
  */
 inline bool doublep(const Cell* c)
 {
+    return c->tag_m == type_double;
 }
 
 /**
@@ -70,6 +89,7 @@ inline bool doublep(const Cell* c)
  */
 inline bool symbolp(const Cell* c)
 {
+    return c->tag_m == type_symbol;
 }
 
 /**
@@ -78,6 +98,11 @@ inline bool symbolp(const Cell* c)
  */
 inline int get_int(const Cell* c)
 {
+    if (!intp(c)) {
+        std::cerr << "ERROR: get_int on non-int cell" << std::endl;
+        exit(1);
+    }
+    return c->int_m;
 }
 
 /**
@@ -86,6 +111,11 @@ inline int get_int(const Cell* c)
  */
 inline double get_double(const Cell* c)
 {
+    if (!doublep(c)) {
+        std::cerr << "ERROR: get_double on non-double cell" << std::endl;
+        exit(1);
+    }
+    return c->double_m;
 }
 
 /**
@@ -95,6 +125,11 @@ inline double get_double(const Cell* c)
  */
 inline char* get_symbol(const Cell* c)
 {
+    if (!symbolp(c)) {
+        std::cerr << "ERROR: get_symbol on non-symbol cell" << std::endl;
+        exit(1);
+    }
+    return c->symbol_m;
 }
 
 /**
@@ -103,6 +138,11 @@ inline char* get_symbol(const Cell* c)
  */
 inline Cell* get_elem(const Node* n)
 {
+    if (n == NULL) {
+        std::cerr << "ERROR: null pointer" << std::endl;
+        exit(1);
+    }
+    return n->elem_m;
 }
 
 /**
@@ -111,6 +151,35 @@ inline Cell* get_elem(const Node* n)
  */
 inline Node* get_next(const Node* n)
 {
+    if (n == NULL) {
+        std::cerr << "ERROR: null pointer" << std::endl;
+        exit(1);
+    }
+    return n->next_m;
+}
+
+/**
+ * \brief Print the cell n in parentheses.
+ * \param os The output stream to print to.
+ * \param c The cell to be printed.
+ */
+inline std::ostream& operator<<(std::ostream& os, Cell* c)
+{
+    switch (c->tag_m) {
+        case type_int:
+            os << get_int(c);
+            break;
+        case type_double:
+            os << get_double(c);
+            break;
+        case type_symbol:
+            os << get_symbol(c);
+            break;
+        default:
+            std::cerr << "ERROR: Unknown type" <<std::endl;
+            exit(1);
+    }
+    return os;
 }
 
 /**
@@ -120,6 +189,18 @@ inline Node* get_next(const Node* n)
  */
 inline std::ostream& operator<<(std::ostream& os, const Node& n)
 {
+    const Node* node = &n;
+    os << '(';
+    while (true){
+        os << node->elem_m;
+        node = get_next(node);
+        if (node == NULL){
+            os << ')';
+            break;
+        }
+        os << ' ';
+    }
+    return os;
 }
 
 #endif // LINKEDLIST_INTERNALS_HPP
