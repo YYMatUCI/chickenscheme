@@ -1,6 +1,12 @@
+# system folder
 .DS_Store
 .vscode
+
+# web related
 */html/*
+*/*.html
+*/*.jpg
+
+# compiled file
 */*.o
 */main
-*/*.jpg
