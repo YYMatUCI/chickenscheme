@@ -31,7 +31,7 @@
 #include <stack>
 
 /**
-  *\brief evaluate Type first.
+  *\brief Cell Type.
   */
 enum TypeMark {type_int, type_double, type_symbol, type_cons};
 
@@ -75,6 +75,11 @@ public:
    * \brief Constructor to make cons cell.
    */
   Cell(Cell* const my_car, Cell* const my_cdr);
+
+  /**
+   * \brief Copy constructor.
+   */
+  Cell(Cell* const c);
 
   /**
    * \brief Check if this is an int cell.

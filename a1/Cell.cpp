@@ -20,18 +20,27 @@ Cell* const nil = NULL;
 
 using namespace std;
 
+/**
+ * \brief Constructor to make int cell.
+ */
 Cell::Cell(const int i) 
 {
   type_m = type_int;
   my_int = i;
 }
 
+/**
+ * \brief Constructor to make double cell.
+ */
 Cell::Cell(const double d)
 {
   type_m = type_double;
   my_double = d;
 }
 
+/**
+ * \brief Constructor to make symbol cell.
+ */
 Cell::Cell(const char* s)
 {
   type_m = type_symbol;
@@ -39,11 +48,45 @@ Cell::Cell(const char* s)
   strcpy(my_symbol, s);
 }
 
+/**
+ * \brief Constructor to make cons cell.
+ */
 Cell::Cell(Cell* const my_car, Cell* const my_cdr)
 {
   type_m = type_cons;
   my_cons.my_car = my_car;
   my_cons.my_cdr = my_cdr;
+}
+
+/**
+ * \brief Copy constructor.
+ */
+Cell::Cell(Cell* const c)
+{
+  if (c == nil) {
+    cerr << "ERROR: cannot copy nil?/n";
+    exit(1);
+  }
+  type_m = c->type_m;
+  switch (type_m)
+  {
+  case type_int:
+    my_int = c->my_int;
+    break;
+  case type_double:
+    my_double = c->my_double;
+    break;
+  case type_symbol:
+    my_symbol = new char[strlen(c->my_symbol) + 1];
+    strcpy(my_symbol, c->my_symbol);
+    break;
+  case type_cons:
+    my_cons.my_car = new Cell(c->get_car());
+    my_cons.my_cdr = new Cell(c->get_cdr());
+  default:
+    cerr << "ERROR: Unknown type.\n";
+    exit(1);
+  }
 }
 
 /**
