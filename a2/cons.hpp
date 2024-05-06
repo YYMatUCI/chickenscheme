@@ -24,7 +24,7 @@ extern Cell* const nil;
  */
 inline Cell* make_int(const int i)
 {
-  return new Cell(i);
+  return new IntCell(i);
 }
 
 /**
@@ -33,7 +33,17 @@ inline Cell* make_int(const int i)
  */
 inline Cell* make_double(const double d)
 {
-  return new Cell(d);
+  return new DoubleCell(d);
+}
+
+/**
+ * \brief Make a double cell.
+ * \param d The initial double value to be stored in the new cell.
+ */
+inline Cell* make_num(const bool is_int, const double d)
+{
+  if (is_int) return new IntCell((int)d);
+  else return new DoubleCell(d);
 }
 
 /**
@@ -42,7 +52,7 @@ inline Cell* make_double(const double d)
  */
 inline Cell* make_symbol(const char* const s)
 {
-  return new Cell(s);
+  return new SymbolCell(s);
 }
 
 /**
@@ -52,7 +62,7 @@ inline Cell* make_symbol(const char* const s)
  */
 inline Cell* cons(Cell* const my_car, Cell* const my_cdr)
 {
-  return new Cell(my_car, my_cdr);
+  return new ConsCell(my_car, my_cdr);
 }
 
 /**
@@ -61,7 +71,7 @@ inline Cell* cons(Cell* const my_car, Cell* const my_cdr)
  */
 inline bool nullp(Cell* const c)
 {
-  return (c == nil);
+  return c->is_nil();
 }
 
 /**

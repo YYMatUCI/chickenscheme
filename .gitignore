@@ -2,6 +2,9 @@
 .DS_Store
 .vscode
 
+# test folder
+tests
+
 # web related
 */html/*
 */*.html
@@ -10,3 +13,5 @@
 # compiled file
 */*.o
 */main
+
+
