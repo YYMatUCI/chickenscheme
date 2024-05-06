@@ -20,6 +20,10 @@ Cell* const nil = new NilCell();
 
 using namespace std;
 
+/**
+ * \brief Distructor
+ */
+Cell::~Cell() {};
 
 /**
  * \brief Make a copy of this cell.
@@ -408,6 +412,14 @@ SymbolCell::SymbolCell(const char* const s)
 {
   c = new char[strlen(s) + 1];
   strcpy(c, s);
+}
+
+/**
+ * \brief Distructor
+ */
+SymbolCell::~SymbolCell()
+{
+    delete[] c;
 }
 
 /**

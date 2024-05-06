@@ -300,7 +300,7 @@ Cell* separate_parse(string& instr)
 
   // check whether to read the end
   clearwhitespace(instr);
-  int length = instr.size();
+  // int length = instr.size();
     // check whether it is a "()" sexpr
 
   while (instr.size() > 0) {

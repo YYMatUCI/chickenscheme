@@ -19,7 +19,6 @@ Cell* eval_plus(Cell* const c)
   bool is_int = true;
   double d = 0;
   Cell* cur = c;
-  Cell* tmp;
   while (!nullp(cur)) {
     eval(car(cur))->plus_c(is_int, d);
     cur = cdr(cur);
@@ -63,8 +62,8 @@ Cell* eval_floor(Cell* const c)
 bool eval_condition(Cell* const c)
 {
   Cell* condition = eval(car(c));
-  return !(intp(condition) && get_int(condition) == 0 || 
-           doublep(condition) && get_double(condition) == 0.0);
+  return !( (intp(condition) && get_int(condition) == 0) || 
+            (doublep(condition) && get_double(condition) == 0.0) );
 }
 
 /**

@@ -41,6 +41,11 @@ class Cell {
 public:
 
   /**
+   * \brief Distructor
+   */
+  virtual ~Cell()=0;
+
+  /**
    * \brief Make a copy of this cell.
    * \return A new cell copy of this cell.
    */
@@ -177,64 +182,64 @@ public:
    * \brief Make a copy of this cell.
    * \return A new cell copy of this cell.
    */
-  IntCell* clone() const;
+  IntCell* clone() const override;
 
   /**
    * \brief Check if this is an int cell.
    * \return True iff this is an int cell.
    */
-  bool is_int() const;
+  bool is_int() const override;
 
   /**
    * \brief Accessor (error if this is not an int cell).
    * \return The value in this int cell.
    */
-  int get_int() const;
+  int get_int() const override;
 
   /**
    * \brief Print the subtree rooted at this cell, in s-expression notation.
    * \param os The output stream to print to.
    */
-  void print(std::ostream& os = std::cout) const;
+  void print(std::ostream& os = std::cout) const override;
 
   /**
    * \brief The plus cell function.
    * \param is_int Record the output type.
    * \param n The number be added.
    */
-  void plus_c(bool& is_int, double& n) const;
+  void plus_c(bool& is_int, double& n) const override;
 
   /**
    * \brief The multiply cell function.
    * \param is_int Record the output type.
    * \param n The number be added.
    */
-  void multi_c(bool& is_int, double& n) const;
+  void multi_c(bool& is_int, double& n) const override;
 
   /**
    * \brief The ceiling cell function.
    * \return The ceilinged number.
    */
-  Cell* ceiling_c() const;
+  Cell* ceiling_c() const override;
 
   /**
    * \brief The floor cell function.
    * \return The floored number.
    */
-  Cell* floor_c() const;
+  Cell* floor_c() const override;
 
   /**
    * \brief The less cell function.
    * \param b Record whether the passed in value is smaller.
    * \param n Pass in a value.
    */
-  void less_c(bool& b, double& n) const;
+  void less_c(bool& b, double& n) const override;
 
   /**
    * \brief The not cell function.
    * \return 1 if contains 0.
    */
-  int not_c() const;
+  int not_c() const override;
 
   /**
    * \brief The eval cell function.
@@ -269,64 +274,64 @@ public:
    * \brief Make a copy of this cell.
    * \return A new cell copy of this cell.
    */
-  DoubleCell* clone() const;
+  DoubleCell* clone() const override;
 
   /**
    * \brief Check if this is a double cell.
    * \return True iff this is a double cell.
    */
-  bool is_double() const;
+  bool is_double() const override;
 
   /**
    * \brief Accessor (error if this is not a double cell).
    * \return The value in this double cell.
    */
-  double get_double() const;
+  double get_double() const override;
 
   /**
    * \brief Print the subtree rooted at this cell, in s-expression notation.
    * \param os The output stream to print to.
    */
-  void print(std::ostream& os = std::cout) const;
+  void print(std::ostream& os = std::cout) const override;
 
   /**
    * \brief The plus cell function.
    * \param is_int Record the output type.
    * \param n The number be added.
    */
-  void plus_c(bool& is_int, double& n) const;
+  void plus_c(bool& is_int, double& n) const override;
 
   /**
    * \brief The multiply cell function.
    * \param is_int Record the output type.
    * \param n The number be added.
    */
-  void multi_c(bool& is_int, double& n) const;
+  void multi_c(bool& is_int, double& n) const override;
 
   /**
    * \brief The ceiling cell function.
    * \return The ceilinged number.
    */
-  Cell* ceiling_c() const;
+  Cell* ceiling_c() const override;
 
   /**
    * \brief The floor cell function.
    * \return The floored number.
    */
-  Cell* floor_c() const;
+  Cell* floor_c() const override;
 
   /**
    * \brief The less cell function.
    * \param b Record whether the passed in value is smaller.
    * \param n Pass in a value.
    */
-  void less_c(bool& b, double& n) const;
+  void less_c(bool& b, double& n) const override;
 
   /**
    * \brief The not cell function.
    * \return 1 if contains 0.0.
    */
-  int not_c() const;
+  int not_c() const override;
 
   /**
    * \brief The eval cell function.
@@ -352,31 +357,36 @@ public:
   /**
    * \brief Build SymbolCell
    */
- SymbolCell(const char* const s);
+  SymbolCell(const char* const s);
+
+  /**
+   * \brief Distructor
+   */
+  ~SymbolCell();
 
   /**
    * \brief Make a copy of this cell.
    * \return A new cell copy of this cell.
    */
-  SymbolCell* clone() const;
+  SymbolCell* clone() const override;
 
   /**
    * \brief Check if this is a symbol cell.
    * \return True iff this is a symbol cell.
    */
-  bool is_symbol() const;
+  bool is_symbol() const override;
 
   /**
    * \brief Accessor (error if this is not a symbol cell).
    * \return The value in this symbol cell.
    */
-  std::string get_symbol() const;
+  std::string get_symbol() const override;
 
   /**
    * \brief Print the subtree rooted at this cell, in s-expression notation.
    * \param os The output stream to print to.
    */
-  void print(std::ostream& os = std::cout) const;
+  void print(std::ostream& os = std::cout) const override;
 
   /**
    * \brief The eval cell function.
@@ -410,31 +420,31 @@ public:
    * \brief Make a copy of this cell.
    * \return A new cell copy of this cell.
    */
-  ConsCell* clone() const;
+  ConsCell* clone() const override;
 
   /**
    * \brief Check if this is a cons cell.
    * \return True iff this is a cons cell.
    */
-  bool is_cons() const;
+  bool is_cons() const override;
 
   /**
    * \brief Accessor (error if this is not a cons cell).
    * \return First child cell.
    */
-  Cell* get_car() const;
+  Cell* get_car() const override;
 
   /**
    * \brief Accessor (error if this is not a cons cell).
    * \return Rest child cell.
    */
-  Cell* get_cdr() const;
+  Cell* get_cdr() const override;
 
   /**
    * \brief Print the subtree rooted at this cell, in s-expression notation.
    * \param os The output stream to print to.
    */
-  void print(std::ostream& os = std::cout) const;
+  void print(std::ostream& os = std::cout) const override;
 
   /**
    * \brief The eval cell function.
@@ -460,18 +470,18 @@ public:
    * \brief Make a copy of this cell.
    * \return A new cell copy of this cell.
    */
-  NilCell* clone() const;
+  NilCell* clone() const override;
 
   /**
    * \brief Check if this is a nil cell.
    * \return True iff this is a nil cell.
    */
-  bool is_nil() const;
+  bool is_nil() const override;
 
   /**
    * \brief Print "()".
    */
-  void print(std::ostream& os = std::cout) const;
+  void print(std::ostream& os = std::cout) const override;
 
 };
 
