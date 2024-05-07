@@ -515,10 +515,14 @@ void ConsCell::print(std::ostream& os) const
 {
   os << "(";
   const Cell* cur = this;
-  while (cur != nil) {
+  if (this->get_cdr() == nil) {
     cur->get_car()->print();
-    os << " ";
-    cur = cur->get_cdr();
+  } else {
+    while (cur != nil) {
+      cur->get_car()->print();
+      os << " ";
+      cur = cur->get_cdr();
+    }
   }
   os << ")";
 }
