@@ -307,7 +307,7 @@ Cell* eval_cdr(Cell* const c)
 Cell* eval_nullp(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    throw runtime_error("ERROR: Exactly one parameter is needed for cdr.");
+    throw runtime_error("ERROR: Exactly one parameter is needed for nullp.");
   }
   return nullp(eval(car(c))) ? make_int(1) : make_int(0);
 }
@@ -333,6 +333,34 @@ Cell* eval_define(Cell* const c)
     throw runtime_error("Predefined symbol \"" + s + "\" cannot be redefined.");
   }
   return nil;
+}
+
+/**
+ * \brief Evalute print.
+ * \param c print cell.
+ * \return nil.
+*/
+Cell* eval_print(Cell* const c)
+{
+  if (nullp(c) || !nullp(cdr(c))) {
+    throw runtime_error("ERROR: Exactly one parameter is needed for eval.");
+  }
+  eval(car(c))->print();
+  cout << endl;
+  return nil;
+}
+
+/**
+ * \brief Evalute eval.
+ * \param c eval cell.
+ * \return Evaluated c.
+*/
+Cell* eval_eval(Cell* const c)
+{
+  if (nullp(c) || !nullp(cdr(c))) {
+    throw runtime_error("ERROR: Exactly one parameter is needed for eval.");
+  }
+  return eval(eval(car(c)));
 }
 
 /**
@@ -380,6 +408,8 @@ Cell* eval(Cell* const c)
     cefmap["cdr"] = &eval_cdr;
     cefmap["nullp"] = &eval_nullp;
     cefmap["define"] = &eval_define;
+    cefmap["print"] = &eval_print;
+    cefmap["eval"] = &eval_eval;
     cefmap_initialized = true;
   }
   
