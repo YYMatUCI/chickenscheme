@@ -7,7 +7,23 @@
  */
 
 #include "eval.hpp"
-#include<cmath>
+#include <cmath>
+#include <map>
+
+/**
+ * \brief To reduce if-else for pre-defined function.
+ */
+typedef Cell* (*CellEvalFunction)(Cell *);
+
+/**
+ * \brief string-function map for pre-defined function.
+ */
+map<string, CellEvalFunction> cefmap;
+
+/**
+ * \brief A boolean record whether cefmap is initialized.
+ */
+bool cefmap_initialized = false;
 
 /**
  * \brief Evaluate plus cell.
@@ -15,7 +31,7 @@
  * \param is_minus True if would like to calculate minus.
  * \return A constant cell which contains int/double. 0 if no parameters given.
  */
-Cell* eval_plus(Cell* const c, bool is_minus=false)
+Cell* eval_plusminus(Cell* const c, bool is_minus=false)
 {
   if (is_minus && (nullp(c) || nullp(cdr(c)))) {
     throw runtime_error("ERROR: At least two parameters are needed for minus operator.");
@@ -39,6 +55,17 @@ Cell* eval_plus(Cell* const c, bool is_minus=false)
   return make_num(is_int, d);
 }
 
+
+/**
+ * \brief Evaluate plus cell.
+ * \param c Head of cells to plus.
+ * \return A constant cell which contains int/double.
+ */
+Cell* eval_plus(Cell* const c)
+{
+  return eval_plusminus(c, false);
+}
+
 /**
  * \brief Evaluate minus cell.
  * \param c Head of cells to minus.
@@ -46,7 +73,7 @@ Cell* eval_plus(Cell* const c, bool is_minus=false)
  */
 Cell* eval_minus(Cell* const c)
 {
-  return eval_plus(c, true);
+  return eval_plusminus(c, true);
 }
 
 /**
@@ -55,7 +82,7 @@ Cell* eval_minus(Cell* const c)
  * \param is_divide
  * \return A constant cell which contains int/double. 1 if no parameters given.
  */
-Cell* eval_multi(Cell* const c, bool is_divide=false)
+Cell* eval_multidivide(Cell* const c, bool is_divide=false)
 {
   if (is_divide && (nullp(c) || nullp(cdr(c)))) {
     throw runtime_error("ERROR: At least two parameters are needed for minus operator.");
@@ -83,13 +110,23 @@ Cell* eval_multi(Cell* const c, bool is_divide=false)
 }
 
 /**
+ * \brief Evaluate multi cell.
+ * \param c Head of cells to multi.
+ * \return A constant cell which contains int/double.
+ */
+Cell* eval_multi(Cell* const c)
+{
+  return eval_multidivide(c, true);
+}
+
+/**
  * \brief Evaluate divide cell.
  * \param c Head of cells to divide.
  * \return A constant cell which contains int/double.
  */
 Cell* eval_divide(Cell* const c)
 {
-  return eval_multi(c, true);
+  return eval_multidivide(c, true);
 }
 
 /**
@@ -240,33 +277,32 @@ Cell* eval_nullp(Cell* const c)
 Cell* eval(Cell* const c)
 {
   Cell* cell;
+  string s;
+  map<string, CellEvalFunction>::iterator cefit;
+
+  // always initiated on the first eval call
+  if (!cefmap_initialized) {
+    cefmap["+"] = &eval_plus;
+    cefmap["-"] = &eval_minus;
+    cefmap["*"] = &eval_multi;
+    cefmap["/"] = &eval_divide;
+    cefmap["ceiling"] = &eval_ceiling;
+    cefmap["floor"] = &eval_floor;
+    cefmap["if"] = &eval_if;
+    cefmap["quote"] = &eval_quote;
+    cefmap["cons"] = &eval_cons;
+    cefmap["car"] = &eval_car;
+    cefmap["cdr"] = &eval_cdr;
+    cefmap["nullp"] = &eval_nullp;
+    cefmap_initialized = true;
+  }
+  
   try {
     if (listp(c) && !nullp(c)) {
-      string s = get_symbol(eval(car(c)));
-      if (s == "+") {
-        cell = eval_plus(cdr(c));
-      } else if (s == "-") {
-        cell = eval_minus(cdr(c));
-      } else if (s == "*") {
-        cell = eval_multi(cdr(c));
-      } else if (s == "/") {
-        cell = eval_divide(cdr(c));
-      } else if (s == "ceiling") {
-        cell = eval_ceiling(cdr(c));
-      } else if (s == "floor") {
-        cell = eval_floor(cdr(c));
-      } else if (s == "if") {
-        cell = eval_if(cdr(c));
-      } else if (s == "quote") {
-        cell = eval_quote(cdr(c));
-      } else if (s == "cons") {
-        cell = eval_cons(cdr(c));
-      } else if (s == "car") {
-        cell = eval_car(cdr(c));
-      } else if (s == "cdr") {
-        cell = eval_cdr(cdr(c));
-      } else if (s == "nullp") {
-        cell = eval_nullp(cdr(c));
+      s = get_symbol(eval(car(c)));
+      cefit = cefmap.find(s);
+      if (cefit != cefmap.end()) {
+        cell = cefmap[s](cdr(c));
       } else {
         throw runtime_error("ERROR: key word '" + s + "' not supported yet.");
       }
