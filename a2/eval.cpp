@@ -18,8 +18,7 @@
 Cell* eval_plus(Cell* const c, bool is_minus=false)
 {
   if (is_minus && (nullp(c) || nullp(cdr(c)))) {
-    cerr << "ERROR: At least two parameters are needed for minus operator.\n";
-    exit(1);
+    throw runtime_error("ERROR: At least two parameters are needed for minus operator.");
   }
   bool is_int = true;
   double d = 0;
@@ -59,8 +58,7 @@ Cell* eval_minus(Cell* const c)
 Cell* eval_multi(Cell* const c, bool is_divide=false)
 {
   if (is_divide && (nullp(c) || nullp(cdr(c)))) {
-    cerr << "ERROR: At least two parameters are needed for minus operator.\n";
-    exit(1);
+    throw runtime_error("ERROR: At least two parameters are needed for minus operator.");
   }
   bool is_int = true;
   double d = 1;
@@ -77,8 +75,7 @@ Cell* eval_multi(Cell* const c, bool is_divide=false)
   }
   if (is_divide) {
     if (d == 0) {
-      cerr << "ERROR: The divisor cannot be zero.\n";
-      exit(1);
+      throw runtime_error("ERROR: The divisor cannot be zero.");
     }
     d = n / d;
   }
@@ -103,8 +100,7 @@ Cell* eval_divide(Cell* const c)
 Cell* eval_ceiling(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    cerr << "ERROR: Exactly one parameter is needed for ceiling.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly one parameter is needed for ceiling.");
   }
   return eval(car(c))->ceiling_c();
 }
@@ -117,8 +113,7 @@ Cell* eval_ceiling(Cell* const c)
 Cell* eval_floor(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    cerr << "ERROR: Exactly one parameter is needed for floor.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly one parameter is needed for floor.");
   }
   return eval(car(c))->floor_c();
 }
@@ -143,13 +138,11 @@ bool eval_condition(Cell* const c)
 Cell* eval_if(Cell* const c)
 {
   if (nullp(c)) {
-    cerr << "ERROR: Missing condition part for if statement.\n";
-    exit(1);
+    throw runtime_error("ERROR: Missing condition part for if statement.");
   }
   Cell* tmp = cdr(c);
   if (nullp(tmp)) {
-    cerr << "ERROR: Missing first part of if.\n";
-    exit(1);
+    throw runtime_error("ERROR: Missing first part of if.");
   }
   if (eval_condition(c)) {
     return eval(car(tmp));
@@ -170,8 +163,7 @@ Cell* eval_if(Cell* const c)
 Cell* eval_quote(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    cerr << "ERROR: Exactly one parameter is needed for quote.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly one parameter is needed for quote.");
   }
   return car(c);
 }
@@ -184,13 +176,11 @@ Cell* eval_quote(Cell* const c)
 Cell* eval_cons(Cell* const c)
 {
   if (nullp(c) || nullp(cdr(c)) || !nullp(cdr(cdr(c)))) {
-    cerr << "ERROR: Exactly two parameter is needed for cons.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly two parameter is needed for cons.");
   }
   Cell* second = eval(car(cdr(c)));
   if (!listp(second)) {
-    cerr << "ERROR: Second parameter should be list after eval for cons.\n";
-    exit(1);
+    throw runtime_error("ERROR: Second parameter should be list after eval for cons.");
   }
   return cons(eval(car(c)), second);
 }
@@ -203,13 +193,11 @@ Cell* eval_cons(Cell* const c)
 Cell* eval_car(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    cerr << "ERROR: Exactly one parameter is needed for car.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly one parameter is needed for car.");
   }
   Cell* first = eval(car(c));
   if (!listp(first)) {
-    cerr << "ERROR: first parameter should be list after eval for car.\n";
-    exit(1);
+    throw runtime_error("ERROR: first parameter should be list after eval for car.");
   }
   return car(first);
 }
@@ -222,13 +210,11 @@ Cell* eval_car(Cell* const c)
 Cell* eval_cdr(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    cerr << "ERROR: Exactly one parameter is needed for cdr.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly one parameter is needed for cdr.");
   }
   Cell* first = eval(car(c));
   if (!listp(first)) {
-    cerr << "ERROR: first parameter should be list after eval for cdr.\n";
-    exit(1);
+    throw runtime_error("ERROR: first parameter should be list after eval for cdr.");
   }
   return cdr(first);
 }
@@ -241,8 +227,7 @@ Cell* eval_cdr(Cell* const c)
 Cell* eval_nullp(Cell* const c)
 {
   if (nullp(c) || !nullp(cdr(c))) {
-    cerr << "ERROR: Exactly one parameter is needed for cdr.\n";
-    exit(1);
+    throw runtime_error("ERROR: Exactly one parameter is needed for cdr.");
   }
   return nullp(eval(car(c))) ? make_int(1) : make_int(0);
 }
@@ -255,38 +240,42 @@ Cell* eval_nullp(Cell* const c)
 Cell* eval(Cell* const c)
 {
   Cell* cell;
-  if (listp(c) && !nullp(c)) {
-    string s = get_symbol(eval(car(c)));
-    if (s == "+") {
-      cell = eval_plus(cdr(c));
-    } else if (s == "-") {
-      cell = eval_minus(cdr(c));
-    } else if (s == "*") {
-      cell = eval_multi(cdr(c));
-    } else if (s == "/") {
-      cell = eval_divide(cdr(c));
-    } else if (s == "ceiling") {
-      cell = eval_ceiling(cdr(c));
-    } else if (s == "floor") {
-      cell = eval_floor(cdr(c));
-    } else if (s == "if") {
-      cell = eval_if(cdr(c));
-    } else if (s == "quote") {
-      cell = eval_quote(cdr(c));
-    } else if (s == "cons") {
-      cell = eval_cons(cdr(c));
-    } else if (s == "car") {
-      cell = eval_car(cdr(c));
-    } else if (s == "cdr") {
-      cell = eval_cdr(cdr(c));
-    } else if (s == "nullp") {
-      cell = eval_nullp(cdr(c));
+  try {
+    if (listp(c) && !nullp(c)) {
+      string s = get_symbol(eval(car(c)));
+      if (s == "+") {
+        cell = eval_plus(cdr(c));
+      } else if (s == "-") {
+        cell = eval_minus(cdr(c));
+      } else if (s == "*") {
+        cell = eval_multi(cdr(c));
+      } else if (s == "/") {
+        cell = eval_divide(cdr(c));
+      } else if (s == "ceiling") {
+        cell = eval_ceiling(cdr(c));
+      } else if (s == "floor") {
+        cell = eval_floor(cdr(c));
+      } else if (s == "if") {
+        cell = eval_if(cdr(c));
+      } else if (s == "quote") {
+        cell = eval_quote(cdr(c));
+      } else if (s == "cons") {
+        cell = eval_cons(cdr(c));
+      } else if (s == "car") {
+        cell = eval_car(cdr(c));
+      } else if (s == "cdr") {
+        cell = eval_cdr(cdr(c));
+      } else if (s == "nullp") {
+        cell = eval_nullp(cdr(c));
+      } else {
+        throw runtime_error("ERROR: key word '" + s + "' not supported yet.");
+      }
     } else {
-      cerr << "ERROR: key word '" << s << "' not supported yet.\n";
-      exit(1);
-    }
-  } else {
-    cell = c->clone();
-  } 
+      cell = c->clone();
+    } 
+  } catch (runtime_error e) {
+    cerr << e.what();
+    cell = nil;
+  }
   return cell;
 }

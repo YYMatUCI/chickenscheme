@@ -31,7 +31,7 @@ Cell::~Cell() {};
  */
 Cell* Cell::clone() const
 {
-  throw runtime_error("ERROR: Clone not implemented for some type.\n");
+  throw runtime_error("ERROR: Clone not implemented for some type.");
 }
 
 /**
@@ -85,7 +85,7 @@ bool Cell::is_nil() const
  */
 int Cell::get_int() const
 {
-  throw runtime_error("ERROR: Get int for non-int cell.\n");
+  throw runtime_error("ERROR: Get int for non-int cell.");
 }
 
 /**
@@ -94,7 +94,7 @@ int Cell::get_int() const
  */
 double Cell::get_double() const
 {
-  throw runtime_error("ERROR: Get double for non-double cell.\n");
+  throw runtime_error("ERROR: Get double for non-double cell.");
 }
 
 /**
@@ -103,7 +103,7 @@ double Cell::get_double() const
  */
 std::string Cell::get_symbol() const
 {
-  throw runtime_error("ERROR: Get symbol for non-symbol cell.\n");
+  throw runtime_error("ERROR: Get symbol for non-symbol cell.");
 }
 
 /**
@@ -112,7 +112,7 @@ std::string Cell::get_symbol() const
  */
 Cell* Cell::get_car() const
 {
-  throw runtime_error("ERROR: Get car for non-cons cell.\n");
+  throw runtime_error("ERROR: Get car for non-cons cell.");
 }
 
 /**
@@ -121,7 +121,7 @@ Cell* Cell::get_car() const
  */
 Cell* Cell::get_cdr() const
 {
-  throw runtime_error("ERROR: Get cdr for non-cons cell.\n");
+  throw runtime_error("ERROR: Get cdr for non-cons cell.");
 }
 
 /**
@@ -137,7 +137,7 @@ void Cell::print(std::ostream& os) const {};
  */
 void Cell::plus_c(bool& is_int, double& n) const
 {
-  throw runtime_error("ERROR: Plus on non-int or non-double cell.\n");
+  throw runtime_error("ERROR: Plus on non-int or non-double cell.");
 }
 
 /**
@@ -147,7 +147,7 @@ void Cell::plus_c(bool& is_int, double& n) const
  */
 void Cell::multi_c(bool& is_int, double& n) const
 {
-  throw runtime_error("ERROR: Multi on non-int or non-double cell.\n");
+  throw runtime_error("ERROR: Multi on non-int or non-double cell.");
 }
 
 /**
@@ -156,7 +156,7 @@ void Cell::multi_c(bool& is_int, double& n) const
  */
 Cell* Cell::ceiling_c() const
 {
-  throw runtime_error("ERROR: Ceiling on non-int or non-double cell.\n");
+  throw runtime_error("ERROR: Ceiling on non-int or non-double cell.");
 }
 
 /**
@@ -165,7 +165,7 @@ Cell* Cell::ceiling_c() const
  */
 Cell* Cell::floor_c() const
 {
-  throw runtime_error("ERROR: Floor on non-int or non-double cell.\n");
+  throw runtime_error("ERROR: Floor on non-int or non-double cell.");
 }
 
 /**
@@ -175,7 +175,7 @@ Cell* Cell::floor_c() const
  */
 void Cell::less_c(bool& b, double& n) const
 {
-  throw runtime_error("ERROR: Compare on non-int or non-double cell.\n");
+  throw runtime_error("ERROR: Compare on non-int or non-double cell.");
 }
 
 /**
