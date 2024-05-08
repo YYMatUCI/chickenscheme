@@ -11,6 +11,11 @@
 #include <map>
 
 /**
+ * \brief Create a string-Cell* symbol map for `define` function
+ */
+map<string, Cell*> smap = {};
+
+/**
  * \brief To reduce if-else for pre-defined function.
  */
 typedef Cell* (*CellEvalFunction)(Cell *);
@@ -116,7 +121,7 @@ Cell* eval_multidivide(Cell* const c, bool is_divide=false)
  */
 Cell* eval_multi(Cell* const c)
 {
-  return eval_multidivide(c, true);
+  return eval_multidivide(c, false);
 }
 
 /**
@@ -270,6 +275,46 @@ Cell* eval_nullp(Cell* const c)
 }
 
 /**
+ * \brief Evaluate define.
+ * \param c define cell.
+ * \return nil if successed. Cannot override pre-defined symbols.
+ */
+Cell* eval_define(Cell* const c)
+{
+  if (nullp(c) || nullp(cdr(c)) || !nullp(cdr(cdr(c)))) {
+    throw runtime_error("ERROR: Exactly two parameters are needed for define.");
+  }
+  if (!symbolp(car(c))) {
+    throw runtime_error("ERROR: The first parameter for define should be a symbol.");
+  }
+  string s = get_symbol(car(c));
+  map<string, CellEvalFunction>::iterator it = cefmap.find(s);
+  if (it == cefmap.end()) {
+    smap[s] = eval(car(cdr(c)))->clone();
+  } else {
+    throw runtime_error("Predefined symbol \"" + s + "\" cannot be redefined.");
+  }
+  return nil;
+}
+
+/**
+ * \brief Evaluate symbol type.
+ * \param c The symbol cell.
+ * \return A cell that previous defined associated with the symbol.
+ */
+Cell* eval_symbol_cell(Cell* const c)
+{
+  string s = get_symbol(c);
+  map<string, Cell*>::iterator it;
+  it = smap.find(s);
+  if (it != smap.end()) {
+    return smap[s]->clone();
+  } else {
+    throw runtime_error("ERROR: attempt to reference an undefined symbol \"" + s + "\"");
+  }
+}
+
+/**
  * \brief Evaluate cell c.
  * \param c The evaluated cell.
  * \return A constant cell which contains int/double.
@@ -294,18 +339,24 @@ Cell* eval(Cell* const c)
     cefmap["car"] = &eval_car;
     cefmap["cdr"] = &eval_cdr;
     cefmap["nullp"] = &eval_nullp;
+    cefmap["define"] = &eval_define;
     cefmap_initialized = true;
   }
   
   try {
     if (listp(c) && !nullp(c)) {
-      s = get_symbol(eval(car(c)));
+      if (!symbolp(car(c))) {
+        throw runtime_error("ERROR: The first element should be a symble when evaluating a list.");
+      }
+      s = get_symbol(car(c));
       cefit = cefmap.find(s);
       if (cefit != cefmap.end()) {
         cell = cefmap[s](cdr(c));
       } else {
         throw runtime_error("ERROR: key word '" + s + "' not supported yet.");
       }
+    } else if (symbolp(c)) {
+      cell = eval_symbol_cell(c);
     } else {
       cell = c->clone();
     } 
