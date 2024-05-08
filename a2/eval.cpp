@@ -161,6 +161,44 @@ Cell* eval_floor(Cell* const c)
 }
 
 /**
+ * \brief Evaluate less cell.
+ * \param c Head of cells to less.
+ * \return A constant cell which contains int/double. 0 if no parameters given.
+ */
+Cell* eval_less(Cell* const c)
+{
+  bool is_less = true;
+  double d = 0;
+  Cell* cur = c;
+  if (!nullp(cur)) {
+    eval(car(cur))->less_c(is_less, d);
+    cur = cdr(cur);
+    is_less = true;
+  }
+  while (!nullp(cur)) {
+    eval(car(cur))->less_c(is_less, d);
+    cur = cdr(cur);
+    if (!is_less) {
+      break;
+    }
+  }
+  return is_less ? make_int(1) : make_int(0);
+}
+
+/**
+ * \brief Evaluate not.
+ * \param c Head of cells to not.
+ * \return An int cell. 1 if conatins int/double 0, otherwise 1;
+*/
+Cell* eval_not(Cell* const c)
+{
+  if (nullp(c) || !nullp(cdr(c))) {
+    throw runtime_error("ERROR: Exactly one parameter is needed for not.");
+  }
+  return eval(car(c))->not_c() ? make_int(1) : make_int(0);
+}
+
+/**
  * \brief Evaluate condition.
  * \param c Head of condition cell.
  * \return False if condition cell is int/double 0, otherwise true.
@@ -333,6 +371,8 @@ Cell* eval(Cell* const c)
     cefmap["/"] = &eval_divide;
     cefmap["ceiling"] = &eval_ceiling;
     cefmap["floor"] = &eval_floor;
+    cefmap["<"] = &eval_less;
+    cefmap["not"] = &eval_not;
     cefmap["if"] = &eval_if;
     cefmap["quote"] = &eval_quote;
     cefmap["cons"] = &eval_cons;

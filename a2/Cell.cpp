@@ -171,7 +171,7 @@ Cell* Cell::floor_c() const
 /**
  * \brief The less cell function.
  * \param b Record whether the passed in value is smaller.
- * \panam d Pass into  a value.
+ * \param d Pass into  a value.
  */
 void Cell::less_c(bool& b, double& n) const
 {
@@ -184,7 +184,7 @@ void Cell::less_c(bool& b, double& n) const
  */
 int Cell::not_c() const
 {
-  return false;
+  throw runtime_error("ERROR: Check not on non-int or non-double cell.");
 }
 
 
@@ -276,11 +276,11 @@ Cell* IntCell::floor_c() const
 /**
  * \brief The less cell function.
  * \param b Record whether the passed in value is smaller.
- * \panam d Pass into  a value.
+ * \param d Pass into  a value.
  */
 void IntCell::less_c(bool& b, double& n) const
 {
-  b = b || n < i;
+  b = n < i;
   n = i;
 }
 
@@ -388,7 +388,7 @@ Cell* DoubleCell::floor_c() const
  */
 void DoubleCell::less_c(bool& b, double& n) const
 {
-  b = b || n < d;
+  b = n < d;
   n = d;
 }
 
